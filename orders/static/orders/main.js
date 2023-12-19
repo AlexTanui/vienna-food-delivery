@@ -276,22 +276,23 @@ function checkout(){
 
 }
 
-function logout(){
-  var current_cart = localStorage.getItem("cart")
-  var csrftoken = getCookie('csrftoken');
-  $.ajax({
-      url : "/save_cart" , // the endpoint
-      type : "POST", // http method
-      data : { cart : current_cart, csrfmiddlewaretoken: csrftoken }, // data sent with the post request
+function logout() {
+    var current_cart = localStorage.getItem("cart");
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+      url: "/save_cart", // the endpoint
+      type: "POST", // http method
+      data: { cart: current_cart, csrfmiddlewaretoken: csrftoken }, // data sent with the post request
 
       // handle a successful response
-      success : function(json) {
-        //clear the local storage
-        localStorage.removeItem("cart"); //Clear the cart
+      success: function (json) {
+        // Clear the local storage
+        localStorage.removeItem("cart");
         localStorage.setItem('cart_retrieved', false);
-        window.location.href = "/logout";
-      },
 
+        // Redirect to the specified site
+         window.location.href = "https://veninafooddelivery.netlify.app/";
+      },
       // handle a non-successful response
       error : function(xhr,errmsg,err) {
           //have this as another toast
