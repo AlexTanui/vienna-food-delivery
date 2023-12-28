@@ -316,3 +316,44 @@ function retrieve_saved_cart(){
     //
   }
 }
+// payment section starts here 
+var stripe = Stripe('pk_test_51OSEDGH2bryDPCw72mVPVzj4Ctf6ozIcA87FUUHr5kVPoT1SlV9M82og1QITfhiguFFW8HYqEEBYdZrB1SwN0cxW00ZZb8fUxO');
+var elements = stripe.elements();
+var cardElement = elements.create('card');
+cardElement.mount('#card-element');
+
+var form = document.getElementById('payment-form');
+
+form.addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  stripe.createToken(cardElement).then(function (result) {
+    if (result.error) {
+      // Display error to the user
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send token to your server
+      stripeTokenHandler(result.token);
+    }
+  });
+});
+
+
+const stripe = require('stripe')('sk_test_51OSEDGH2bryDPCw7x4EYU1k1IFcSCiZ5LlizvmB44peUhljB1GgdU8zUCK4hhC0ddej4yPLbPl5uSTdXr3p0RWeG006BxdrlIh');
+
+app.post('/charge', async (req, res) => {
+  const token = req.body.stripeToken;
+
+  const charge = await stripe.charges.create({
+    amount: 1000, // amount in cents
+    currency: 'usd',
+    description: 'Example charge',
+    source: token,
+  });
+
+  // Handle the charge success or failure
+  // Send a response to the client
+  res.send('Payment Successful');
+});
+
